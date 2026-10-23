@@ -340,6 +340,8 @@ closeStatusBtn.addEventListener('click', () => statusModal.classList.add('hidden
 // Proses Pencarian Status
 checkStatusForm.addEventListener('submit', async (e) => {
   e.preventDefault();
+  
+  // 1. Ambil
   const rawPhone = document.getElementById('searchPhone').value.trim();
   const cleanPhone = rawPhone.replace(/\D/g, '');
 
