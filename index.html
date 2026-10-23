@@ -40,6 +40,90 @@
 .badge-confirmed { background: #dbeafe; color: #1e40af; }
 .badge-completed { background: #d1fae5; color: #065f46; }
 .badge-cancelled { background: #fee2e2; color: #991b1b; }
+/* Styling Galeri Portofolio */
+.portfolio-section {
+  padding: 50px 16px;
+  background-color: #f8fafc;
+}
+.portfolio-filters {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+.filter-btn {
+  background-color: #ffffff;
+  color: #1e293b;
+  border: 1px solid #cbd5e1;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.filter-btn:hover, .filter-btn.active {
+  background-color: #087e8b;
+  color: #ffffff;
+  border-color: #087e8b;
+}
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 22px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.portfolio-card {
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.portfolio-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+.portfolio-img {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+.portfolio-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.category-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(16, 43, 70, 0.85);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  backdrop-filter: blur(4px);
+}
+.portfolio-info {
+  padding: 18px;
+}
+.portfolio-info h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+  color: #102b46;
+}
+.portfolio-info p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #64748b;
+  line-height: 1.4;
+}
   </style>
 </head>
 <body class="bg-mist text-ink antialiased">
@@ -127,6 +211,63 @@
         </article>
       </div>
     </section>
+
+    <!-- Section Portofolio & Dokumentasi -->
+<section id="portfolio" class="portfolio-section">
+  <div class="container">
+    <div class="section-title">
+      <h2>Portofolio & Dokumentasi Pekerjaan</h2>
+      <p>Dokumentasi hasil pengerjaan proyek dan pemeliharaan oleh tim teknisi ahli VoltCare.</p>
+    </div>
+
+    <!-- Filter Kategori -->
+    <div class="portfolio-filters">
+      <button class="filter-btn active" data-filter="all">Semua Proyek</button>
+      <button class="filter-btn" data-filter="listrik">Instalasi Listrik</button>
+      <button class="filter-btn" data-filter="pabrik">Mesin Pabrikasi</button>
+      <button class="filter-btn" data-filter="kapal">Electrical Kapal</button>
+    </div>
+
+    <!-- Grid Kartu Galeri -->
+    <div class="portfolio-grid">
+      <!-- Proyek 1 -->
+      <div class="portfolio-card" data-category="listrik">
+        <div class="portfolio-img">
+          <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=600&q=80" alt="Pemeliharaan Panel Listrik Utama" loading="lazy">
+          <span class="category-badge">Instalasi Listrik</span>
+        </div>
+        <div class="portfolio-info">
+          <h3>Pemeliharaan Panel Distribusi Listrik Utama</h3>
+          <p>Pemeriksaan dan perbaikan sistem grounding serta perapihan kabel panel utama pada gedung komersial.</p>
+        </div>
+      </div>
+
+      <!-- Proyek 2 -->
+      <div class="portfolio-card" data-category="pabrik">
+        <div class="portfolio-img">
+          <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80" alt="Overhaul Otomasi Mesin Pabrik" loading="lazy">
+          <span class="category-badge">Mesin Pabrikasi</span>
+        </div>
+        <div class="portfolio-info">
+          <h3>Overhaul & Kalibrasi Otomasi Mesin Produksi</h3>
+          <p>Troubleshooting sistem kontrol PLC dan perbaikan motor penggerak lini produksi pabrikasi.</p>
+        </div>
+      </div>
+
+      <!-- Proyek 3 -->
+      <div class="portfolio-card" data-category="kapal">
+        <div class="portfolio-img">
+          <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&w=600&q=80" alt="Sistem Kelistrikan Kapal" loading="lazy">
+          <span class="category-badge">Electrical Kapal</span>
+        </div>
+        <div class="portfolio-info">
+          <h3>Perbaikan Sistem Kelistrikan & Navigasi Kapal</h3>
+          <p>Inspeksi instalasi kabel genset dan perbaikan papan distribusi daya di kapal kargo.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
     <!-- FORMULIR KONSULTASI -->
     <section id="konsultasi" class="bg-white py-14 lg:py-20">
@@ -397,6 +538,30 @@ checkStatusForm.addEventListener('submit', async (e) => {
       </div>
     `;
   }).join('');
+});
+    // Logika Filter Portofolio
+document.addEventListener('DOMContentLoaded', () => {
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const portfolioCards = document.querySelectorAll('.portfolio-card');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Hapus kelas 'active' dari semua tombol
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const filterValue = btn.getAttribute('data-filter');
+
+      portfolioCards.forEach(card => {
+        const cardCategory = card.getAttribute('data-category');
+        if (filterValue === 'all' || filterValue === cardCategory) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
 });
   </script>
 </body>
