@@ -340,27 +340,40 @@ closeStatusBtn.addEventListener('click', () => statusModal.classList.add('hidden
 // Proses Pencarian Status
 checkStatusForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-  
-  // 1. Ambil
   const rawPhone = document.getElementById('searchPhone').value.trim();
-  const cleanPhone = rawPhone.replace(/\D/g, '');
 
-  if (!cleanPhone) {
+  if (!rawPhone) {
+    statusResult.innerHTML = '<p style="color:#b42318;">Masukkan nomor HP terlebih dahulu.</p>';
+    return;
+  }
+
+  // 1. Bersihkan semua simbol (spasi, strip, tanda +)
+  let cleanPhone = rawPhone.replace(/\D/g, '');
+
+  // 2. Normalisasi awalan: 
+  // Jika diawali '62', hapus '62' di depan. Jika diawali '0', hapus '0' di depan.
+  if (cleanPhone.startsWith('62')) {
+    cleanPhone = cleanPhone.slice(2);
+  } else if (cleanPhone.startsWith('0')) {
+    cleanPhone = cleanPhone.slice(1);
+  }
+
+  if (cleanPhone.length < 7) {
     statusResult.innerHTML = '<p style="color:#b42318;">Masukkan nomor HP yang valid.</p>';
     return;
   }
 
   statusResult.innerHTML = '<p>Mencari data konsultasi…</p>';
 
-  // Mengambil data dari Supabase berdasarkan nomor telepon
+  // 3. Cari di database berdasarkan angka inti (misal: 82111760016)
   const { data, error } = await db
     .from('voltcare_consultations')
-    .select('issue, preferred_datetime, status, created_at')
+    .select('customer_name, issue, preferred_datetime, status, created_at, customer_phone')
     .like('customer_phone', `%${cleanPhone}%`)
     .order('created_at', { ascending: false });
 
   if (error) {
-    statusResult.innerHTML = `<p style="color:#b42318;">Gagal mengambil data: ${error.message}</p>`;
+    statusResult.innerHTML = `<p style="color:#b42318;">Kendala saat mengambil data: ${error.message}</p>`;
     return;
   }
 
@@ -369,16 +382,17 @@ checkStatusForm.addEventListener('submit', async (e) => {
     return;
   }
 
-  // Tampilkan daftar konsultasi yang ditemukan
+  // 4. Tampilkan hasil jika data ditemukan
   statusResult.innerHTML = data.map(item => {
     const st = statusLabels[item.status] || { label: item.status, class: '' };
-    const dateFmt = new Date(item.created_at).toLocaleDateString('id-ID', { dateStyle: 'medium' });
+    const dateFmt = item.created_at ? new Date(item.created_at).toLocaleDateString('id-ID', { dateStyle: 'medium' }) : '—';
     return `
       <div class="status-card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
           <strong>${item.issue || 'Konsultasi'}</strong>
           <span class="badge ${st.class}">${st.label}</span>
         </div>
+        <div class="small-text" style="margin:0;">Pemohon: ${item.customer_name || 'Pelanggan'}</div>
         <div class="small-text" style="margin:0;">Diajukan pada: ${dateFmt}</div>
       </div>
     `;
